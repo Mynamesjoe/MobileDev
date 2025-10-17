@@ -1,0 +1,403 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Animated, Dimensions, StatusBar, ScrollView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { Theme } from '@/constants/Theme';
+import { authAPI } from '@/services/api';
+
+const { width, height } = Dimensions.get('window');
+
+export default function RegisterScreen() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // Animation values
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(50)).current;
+  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  const floatAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    startAnimations();
+  }, []);
+
+  const startAnimations = () => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 50,
+        friction: 8,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    // Floating animation
+    const floatAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatAnim, {
+          toValue: 1,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(floatAnim, {
+          toValue: 0,
+          duration: 3000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    floatAnimation.start();
+  };
+
+  const handleRegister = async () => {
+    if (!name || !email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters long');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await authAPI.register(name, email, password);
+      if (response.success) {
+        Alert.alert('Success', 'Registration successful! Please login.', [
+          {
+            text: 'OK',
+            onPress: () => router.replace('login' as any)
+          }
+        ]);
+      }
+    } catch (error: any) {
+      Alert.alert('Registration Failed', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const floatInterpolate = floatAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -10],
+  });
+
+  return (
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#8B0000" />
+      <LinearGradient
+        colors={['#FFFFFF', '#8B0000']}
+        style={styles.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        {/* Animated Background Elements */}
+        <Animated.View style={[styles.backgroundCircle, styles.circle1, { transform: [{ translateY: floatInterpolate }] }]} />
+        <Animated.View style={[styles.backgroundCircle, styles.circle2, { transform: [{ translateY: floatInterpolate }] }]} />
+
+        {/* Back Button */}
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
+
+        {/* Header Section */}
+        <Animated.View 
+          style={[
+            styles.headerSection,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }]
+            }
+          ]}
+        >
+          <Text style={styles.brandText}>Mick's Barber</Text>
+          <Text style={styles.welcomeText}>Join Our Family</Text>
+          <Text style={styles.subtitle}>Create your account and start your journey</Text>
+        </Animated.View>
+
+        {/* Form Container */}
+        <ScrollView 
+          style={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <Animated.View 
+            style={[
+              styles.formContainer,
+              {
+                opacity: fadeAnim,
+                transform: [
+                  { translateY: slideAnim },
+                  { scale: scaleAnim }
+                ]
+              }
+            ]}
+          >
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Full Name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your full name"
+                placeholderTextColor="#999"
+                autoCapitalize="words"
+                value={name}
+                onChangeText={setName}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Email Address</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your email"
+                placeholderTextColor="#999"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Create a password"
+                placeholderTextColor="#999"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Confirm Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Confirm your password"
+                placeholderTextColor="#999"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+            </View>
+
+            <TouchableOpacity 
+              style={[styles.primaryButton, loading && styles.disabledButton]} 
+              onPress={handleRegister}
+              disabled={loading}
+            >
+              <LinearGradient
+                colors={['#FF6B6B', '#8B0000']}
+                style={styles.buttonGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                <Text style={styles.primaryButtonText}>
+                  {loading ? 'Creating Account...' : 'Create Account'}
+                </Text>
+                {!loading && <Text style={styles.buttonIcon}>→</Text>}
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.linkButton} onPress={() => router.replace('login' as any)}>
+              <Text style={styles.linkText}>Already have an account? </Text>
+              <Text style={styles.linkAccent}>Sign In</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </ScrollView>
+      </LinearGradient>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  gradient: {
+    flex: 1,
+  },
+  // Background animated circles
+  backgroundCircle: {
+    position: 'absolute',
+    borderRadius: 1000,
+    opacity: 0.1,
+  },
+  circle1: {
+    width: 200,
+    height: 200,
+    backgroundColor: '#8B0000',
+    top: -100,
+    right: -50,
+  },
+  circle2: {
+    width: 150,
+    height: 150,
+    backgroundColor: '#FFFFFF',
+    bottom: 100,
+    left: -75,
+  },
+  // Back Button
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    padding: 12,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 10,
+  },
+  backButtonText: {
+    fontSize: 24,
+    color: '#8B0000',
+    fontWeight: 'bold',
+  },
+  // Header Section
+  headerSection: {
+    alignItems: 'center',
+    marginBottom: 30,
+    marginTop: 80,
+    paddingHorizontal: 20,
+  },
+  brandText: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    fontWeight: '300',
+    letterSpacing: 0.5,
+  },
+  // Scroll Container
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 30,
+  },
+  // Form Container
+  formContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 25,
+    padding: 30,
+    marginHorizontal: 20,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  // Input Styles
+  inputContainer: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 8,
+  },
+  input: {
+    height: 55,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    borderRadius: 15,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    color: '#1a1a1a',
+    backgroundColor: '#f8f9fa',
+  },
+  // Button Styles
+  primaryButton: {
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  disabledButton: {
+    opacity: 0.7,
+  },
+  buttonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+    marginRight: 8,
+  },
+  buttonIcon: {
+    fontSize: 20,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
+  // Link Button
+  linkButton: {
+    marginTop: 25,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  linkText: {
+    fontSize: 16,
+    color: '#6b7280',
+    fontWeight: '400',
+  },
+  linkAccent: {
+    fontSize: 16,
+    color: '#8B0000',
+    fontWeight: 'bold',
+  },
+});
