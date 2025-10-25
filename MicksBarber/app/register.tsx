@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Theme } from '@/constants/Theme';
 import { authAPI } from '@/services/api';
+import Footer from './components/Footer';
 
 const { width, height } = Dimensions.get('window');
 
@@ -226,6 +227,9 @@ export default function RegisterScreen() {
           </Animated.View>
         </ScrollView>
       </LinearGradient>
+
+      {/* Footer */}
+      <Footer />
     </View>
   );
 }

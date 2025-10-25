@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { Theme } from '@/constants/Theme';
 import { authAPI } from '@/services/api';
 import { AuthContext } from './_layout';
+import Footer from './components/Footer';
 
 const { width, height } = Dimensions.get('window');
 
@@ -193,6 +194,9 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </Animated.View>
       </LinearGradient>
+
+      {/* Footer */}
+      <Footer />
     </View>
   );
 }

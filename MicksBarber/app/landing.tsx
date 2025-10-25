@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Animated, Dimensions, 
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Theme } from '@/constants/Theme';
+import Footer from './components/Footer';
 
 const { width, height } = Dimensions.get('window');
 
@@ -258,6 +259,9 @@ export default function LandingPage() {
           <View style={styles.decorationLine} />
         </Animated.View>
       </LinearGradient>
+
+      {/* Footer */}
+      <Footer />
     </View>
   );
 }
