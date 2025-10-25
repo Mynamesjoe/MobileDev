@@ -1,28 +1,8 @@
 import axios from 'axios';
-import Constants from 'expo-constants';
-
-// Resolve base URL that works on device (Expo Go) and emulator
-function resolveBaseUrl(): string {
-  // Default to localhost (works on web/emulator)
-  let host = 'localhost';
-
-  // Try to infer LAN IP from Expo (works on Expo Go on device)
-  const hostUri = (Constants as any)?.expoConfig?.hostUri
-    || (Constants as any)?.manifest?.debuggerHost
-    || (Constants as any)?.manifest2?.extra?.expoGo?.debuggerHost;
-
-  if (hostUri && typeof hostUri === 'string') {
-    const inferredHost = hostUri.split(':')[0];
-    if (inferredHost && inferredHost !== '127.0.0.1' && inferredHost !== 'localhost') {
-      host = inferredHost;
-    }
-  }
-
-  return `http://${host}:3000/api`;
-}
+import { getBackendUrl } from '../config/backend';
 
 const api = axios.create({
-  baseURL: resolveBaseUrl(),
+  baseURL: getBackendUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -47,7 +27,7 @@ export const authAPI = {
   // Login user
   login: async (email: string, password: string) => {
     try {
-      console.log('API: Making login request to:', resolveBaseUrl() + '/auth/login');
+      console.log('API: Making login request to:', getBackendUrl() + '/auth/login');
       console.log('API: Login data:', { email, password: '***' });
       
       const response = await api.post('/auth/login', {
@@ -73,7 +53,7 @@ export const authAPI = {
 export const barberAPI = {
   getBarbers: async () => {
     try {
-      console.log('Making request to:', resolveBaseUrl() + '/barbers');
+      console.log('Making request to:', getBackendUrl() + '/barbers');
       const response = await api.get('/barbers');
       console.log('Barbers API response:', response.data);
       return response.data;

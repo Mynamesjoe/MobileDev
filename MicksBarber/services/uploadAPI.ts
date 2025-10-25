@@ -1,24 +1,6 @@
-import Constants from 'expo-constants';
+import { getBackendUrl } from '../config/backend';
 
-// Resolve base URL that works on device (Expo Go) and emulator
-function resolveBaseUrl(): string {
-  // Default to localhost (works on web/emulator)
-  let host = 'localhost';
-
-  // Try to infer LAN IP from Expo (works on Expo Go on device)
-  const hostUri = (Constants as any)?.expoConfig?.hostUri;
-  if (hostUri) {
-    // Extract IP from hostUri (format: "192.168.1.100:8081")
-    const parts = hostUri.split(':');
-    if (parts.length >= 1) {
-      host = parts[0];
-    }
-  }
-
-  return `http://${host}:3000/api`;
-}
-
-const API_BASE_URL = resolveBaseUrl();
+const API_BASE_URL = getBackendUrl();
 
 // Upload API service with proper React Native FormData handling
 export const uploadAPI = {

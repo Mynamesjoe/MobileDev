@@ -13,25 +13,7 @@ import {
 import { AdminTheme } from '@/constants/AdminTheme';
 import { appointmentAPI } from '@/services/api';
 import { paymentAPI } from '@/services/paymentAPI';
-import Constants from 'expo-constants';
-
-// Resolve base URL that works on device (Expo Go) and emulator
-function resolveBaseUrl(): string {
-  // Default to localhost (works on web/emulator)
-  let host = 'localhost';
-
-  // Try to infer LAN IP from Expo (works on Expo Go on device)
-  const hostUri = (Constants as any)?.expoConfig?.hostUri;
-  if (hostUri) {
-    // Extract IP from hostUri (format: "192.168.1.100:8081")
-    const parts = hostUri.split(':');
-    if (parts.length >= 1) {
-      host = parts[0];
-    }
-  }
-
-  return `http://${host}:3000`;
-}
+import { getBaseUrl } from '../../config/backend';
 
 interface ReceiptViewerProps {
   visible: boolean;
@@ -79,7 +61,7 @@ export default function ReceiptViewer({
       
       if (paymentData && paymentData.receipt_image) {
         // Construct the full URL for the receipt image
-        const baseUrl = resolveBaseUrl();
+        const baseUrl = getBaseUrl();
         const receiptUrl = `${baseUrl}${paymentData.receipt_image}`;
         console.log('Receipt URL:', receiptUrl);
         setReceiptImage(receiptUrl);
