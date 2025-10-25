@@ -14,6 +14,7 @@ import { AdminTheme } from '@/constants/AdminTheme';
 import { AuthContext } from '../_layout';
 import { appointmentAPI } from '@/services/api';
 import ReceiptViewer from '../components/ReceiptViewer';
+import Footer from '../components/Footer';
 
 interface Appointment {
   id: number;
@@ -171,8 +172,13 @@ export default function AdminDashboard() {
   };
 
   const handleViewReceipt = (appointment: Appointment) => {
-    setSelectedAppointment(appointment);
-    setShowReceiptViewer(true);
+    // Ensure all required fields are present for ReceiptViewer
+    if (appointment.user_name && appointment.service_name && appointment.barber_name && appointment.service_price !== undefined) {
+      setSelectedAppointment(appointment);
+      setShowReceiptViewer(true);
+    } else {
+      Alert.alert('Error', 'Appointment data is incomplete');
+    }
   };
 
   const handleReceiptViewerClose = () => {
@@ -468,12 +474,25 @@ export default function AdminDashboard() {
           </>
         )}
 
+        {/* Footer */}
+        <Footer />
+
         {/* Receipt Viewer Modal */}
-        {selectedAppointment && (
+        {selectedAppointment && selectedAppointment.user_name && selectedAppointment.service_name && selectedAppointment.barber_name && selectedAppointment.service_price !== undefined && (
           <ReceiptViewer
             visible={showReceiptViewer}
             onClose={handleReceiptViewerClose}
-            appointment={selectedAppointment}
+            appointment={{
+              id: selectedAppointment.id,
+              user_name: selectedAppointment.user_name,
+              service_name: selectedAppointment.service_name,
+              service_price: selectedAppointment.service_price,
+              appointment_date: selectedAppointment.appointment_date,
+              appointment_time: selectedAppointment.appointment_time,
+              barber_name: selectedAppointment.barber_name,
+              payment_status: selectedAppointment.status,
+              payment_id: undefined
+            }}
             onStatusUpdate={handleStatusUpdate}
             isAdmin={true}
           />

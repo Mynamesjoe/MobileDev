@@ -4,6 +4,7 @@ import { router, useRouter } from 'expo-router';
 import { CustomerTheme } from '@/constants/CustomerTheme';
 import { AuthContext } from '../_layout';
 import { appointmentAPI } from '@/services/api';
+import Footer from '../components/Footer';
 
 interface UserProfile {
   id: number;
@@ -323,6 +324,9 @@ export default function ProfileScreen() {
           <Text style={styles.signOutButtonText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Footer */}
+      <Footer />
     </ScrollView>
   );
 }

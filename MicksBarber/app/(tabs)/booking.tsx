@@ -6,6 +6,7 @@ import { appointmentAPI } from '@/services/api';
 import { AuthContext } from '../_layout';
 import BookingModal from '../components/BookingModal';
 import ReceiptViewer from '../components/ReceiptViewer';
+import Footer from '../components/Footer';
 import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
@@ -365,7 +366,10 @@ export default function BookingScreen() {
             contentContainerStyle={styles.listContainer}
           />
         )}
-      </ScrollView>
+        </ScrollView>
+
+      {/* Footer */}
+      <Footer />
 
       {/* Booking Modal */}
       <BookingModal

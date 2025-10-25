@@ -5,6 +5,7 @@ import { CustomerTheme } from '@/constants/CustomerTheme';
 import { barberAPI, serviceAPI } from '@/services/api';
 import { AuthContext } from '../_layout';
 import BookingModal from '../components/BookingModal';
+import Footer from '../components/Footer';
 
 const { width } = Dimensions.get('window');
 
@@ -262,6 +263,9 @@ export default function HomeTab() {
           ))}
         </View>
       </Animated.View>
+
+      {/* Footer */}
+      <Footer />
 
       {/* Booking Modal */}
       <BookingModal
