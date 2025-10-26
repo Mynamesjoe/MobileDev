@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: Theme.spacing.lg,
+    padding: Dimensions.get('window').width > 768 ? 60 : 20,
   },
   // Background animated circles
   backgroundCircle: {

@@ -6,6 +6,7 @@ import { barberAPI, serviceAPI } from '@/services/api';
 import { AuthContext } from '../_layout';
 import BookingModal from '../components/BookingModal';
 import Footer from '../components/Footer';
+import { responsiveWidth, responsiveHeight, scale, DeviceType, getResponsivePadding, getResponsiveFontSize } from '@/utils/responsive';
 
 const { width } = Dimensions.get('window');
 
@@ -286,7 +287,9 @@ const styles = StyleSheet.create({
   // Top Image Section
   topImageContainer: {
     position: 'relative',
-    height: 300,
+    height: Dimensions.get('window').height * 0.35, // 35% of screen height
+    maxHeight: 400,
+    minHeight: 250,
     overflow: 'hidden',
   },
   topImage: {
@@ -302,9 +305,9 @@ const styles = StyleSheet.create({
   },
   headerContent: {
     position: 'absolute',
-    top: 50,
-    left: 20,
-    right: 20,
+    top: width > 768 ? 70 : 50,
+    left: width > 768 ? 40 : 20,
+    right: width > 768 ? 40 : 20,
     zIndex: 2,
   },
   welcomeText: {
@@ -314,7 +317,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   brandText: {
-    fontSize: 32,
+    fontSize: width > 768 ? 36 : width < 375 ? 26 : 32,
     color: '#FFFFFF',
     fontWeight: 'bold',
     marginTop: 5,
