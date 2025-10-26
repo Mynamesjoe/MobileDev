@@ -105,8 +105,8 @@ export default function BookingModal({ visible, onClose, onBookingComplete, user
       if (currentStep === 3) {
         await createAppointmentForPayment();
       } else {
-        setCurrentStep(currentStep + 1);
-      }
+      setCurrentStep(currentStep + 1);
+    }
     }
   };
 
@@ -517,28 +517,28 @@ export default function BookingModal({ visible, onClose, onBookingComplete, user
       <View style={styles.inputContainer}>
         <Text style={styles.inputLabel}>Select Date</Text>
         <Text style={styles.inputHint}>Choose your preferred date</Text>
-        {Platform.OS === 'web' ? (
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => {
+          {Platform.OS === 'web' ? (
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => {
               validateAndSetDate(e.target.value);
-            }}
-            min={getTomorrowDate().toISOString().split('T')[0]}
-            max={getMaxDate().toISOString().split('T')[0]}
-            style={{
-              width: '100%',
-              padding: '15px',
-              border: `1px solid ${CustomerTheme.colors.border}`,
-              borderRadius: '8px',
-              backgroundColor: CustomerTheme.colors.background,
-              fontSize: '16px',
-              color: CustomerTheme.colors.text,
-              outline: 'none',
-            }}
-          />
-        ) : (
-          <TouchableOpacity 
+              }}
+              min={getTomorrowDate().toISOString().split('T')[0]}
+              max={getMaxDate().toISOString().split('T')[0]}
+              style={{
+                width: '100%',
+                padding: '15px',
+                border: `1px solid ${CustomerTheme.colors.border}`,
+                borderRadius: '8px',
+                backgroundColor: CustomerTheme.colors.background,
+                fontSize: '16px',
+                color: CustomerTheme.colors.text,
+                outline: 'none',
+              }}
+            />
+          ) : (
+              <TouchableOpacity 
             style={[
               styles.pickerButton,
               selectedDate && styles.pickerButtonActive
@@ -547,10 +547,10 @@ export default function BookingModal({ visible, onClose, onBookingComplete, user
           >
             <Text style={[styles.pickerButtonText, { color: '#000000' }]}>
               {selectedDate ? formatDateForDisplay(selectedDate) : '📅 Select Date'}
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
+                </Text>
+              </TouchableOpacity>
+          )}
+        </View>
 
       {showCalendar && Platform.OS !== 'web' && renderCalendar()}
       {showTimeGrid && Platform.OS !== 'web' && renderTimeGrid()}
@@ -558,29 +558,29 @@ export default function BookingModal({ visible, onClose, onBookingComplete, user
       <View style={styles.inputContainer}>
         <Text style={styles.inputLabel}>Select Time</Text>
         <Text style={styles.inputHint}>Choose your preferred time</Text>
-        <Text style={styles.businessHoursText}>Business Hours: 9:00 AM - 5:59 PM</Text>
-        {Platform.OS === 'web' ? (
-          <input
-            type="time"
-            value={selectedTime}
-            onChange={(e) => {
+          <Text style={styles.businessHoursText}>Business Hours: 9:00 AM - 5:59 PM</Text>
+          {Platform.OS === 'web' ? (
+            <input
+              type="time"
+              value={selectedTime}
+              onChange={(e) => {
               validateTimeInput(e.target.value);
-            }}
-            min="09:00"
-            max="17:59"
-            style={{
-              width: '100%',
-              padding: '15px',
-              border: `1px solid ${CustomerTheme.colors.border}`,
-              borderRadius: '8px',
-              backgroundColor: CustomerTheme.colors.background,
-              fontSize: '16px',
-              color: CustomerTheme.colors.text,
-              outline: 'none',
-            }}
-          />
-        ) : (
-          <TouchableOpacity 
+              }}
+              min="09:00"
+              max="17:59"
+              style={{
+                width: '100%',
+                padding: '15px',
+                border: `1px solid ${CustomerTheme.colors.border}`,
+                borderRadius: '8px',
+                backgroundColor: CustomerTheme.colors.background,
+                fontSize: '16px',
+                color: CustomerTheme.colors.text,
+                outline: 'none',
+              }}
+            />
+          ) : (
+              <TouchableOpacity 
             style={[
               styles.pickerButton,
               selectedTime && styles.pickerButtonActive
@@ -589,18 +589,18 @@ export default function BookingModal({ visible, onClose, onBookingComplete, user
           >
             <Text style={[styles.pickerButtonText, { color: '#000000' }]}>
               {selectedTime ? formatTimeForDisplay(selectedTime) : '🕐 Select Time'}
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {selectedDate && selectedTime && (
-        <View style={styles.selectedDateTimeContainer}>
-          <Text style={styles.selectedDateTimeText}>
-            Selected: {formatDateForDisplay(selectedDate)} at {formatTimeForDisplay(selectedTime)}
-          </Text>
+                </Text>
+              </TouchableOpacity>
+          )}
         </View>
-      )}
+
+        {selectedDate && selectedTime && (
+          <View style={styles.selectedDateTimeContainer}>
+            <Text style={styles.selectedDateTimeText}>
+              Selected: {formatDateForDisplay(selectedDate)} at {formatTimeForDisplay(selectedTime)}
+            </Text>
+          </View>
+        )}
 
       {/* Time Picker Modal */}
       {showTimePicker && (
@@ -611,7 +611,7 @@ export default function BookingModal({ visible, onClose, onBookingComplete, user
           onChange={handleTimeChange}
         />
       )}
-    </View>
+      </View>
   );
 
   const renderPaymentStep = () => (
@@ -673,14 +673,14 @@ export default function BookingModal({ visible, onClose, onBookingComplete, user
 
   const canProceed = () => {
     const result = (() => {
-      switch (currentStep) {
-        case 1: return selectedService !== null;
-        case 2: return selectedBarber !== null;
-        case 3: return selectedDate !== '' && selectedTime !== '';
+    switch (currentStep) {
+      case 1: return selectedService !== null;
+      case 2: return selectedBarber !== null;
+      case 3: return selectedDate !== '' && selectedTime !== '';
         case 4: return true; // Payment step - handled by PaymentMethod component
         case 5: return true;
-        default: return false;
-      }
+      default: return false;
+    }
     })();
     
     console.log(`canProceed check - Step ${currentStep}:`, {
